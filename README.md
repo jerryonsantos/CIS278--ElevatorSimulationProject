@@ -22,7 +22,7 @@ Jaden Nguyen: Creating user interaction in main()
 1. Single Elevator Logic: The simulation models a single elevator operating within a user-defined number of floors.
 2. Pickup and Destination Requests: Users can call the elevator from any floor. Once inside, they’re prompted to select a destination floor.
 Idle, Moving, and Rider-Inside States
-3. The elevator status: Displays different statuses such as - Idle when not in use, Moving when traveling between floors, Rider inside when someone is onboard waiting to choose a floor
+3. The elevator status: Displays different statuses such as: Idle when not in use, Moving when traveling between floors, Rider inside when someone is onboard waiting to choose a floor
 4. Direction Display (Up/Down): While moving, the elevator shows if it is going up or down, along with the current floor.
 5. Request: If multiple floors request the elevator the simulation will handle the first request than the next
 6. Exit and Input Validation: Users can skip a turn or exit the simulation cleanly. Input is validated to prevent invalid floor entries.
