@@ -3,12 +3,12 @@ This is a simple C++  program that simulates the operation of a single elevator 
 
 # How to run the code
 
-ON IDE
+## ON IDE
 1. Open CLion or any IDE
 2. Create a new project or open the folder where your main.cpp file is.
 3. Paste my code into main.cpp (or add it to src if using CMake).
 4. Click the green "Run" triangle button at the top right.
-USING TERMINAL
+## USING TERMINAL
 1. Clone this GitHub repo
 2. Navigate to project folder
 3. Compile c++ code
