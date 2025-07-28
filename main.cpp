@@ -1,17 +1,15 @@
 // Authors: Jeremiah David & Jaden Ngyuen
 // Date: 7/24/2025
 
-
-
 #include <iostream>
 #include <set>
 #include <thread>
 #include <chrono>
-#include <cmath>
 
 using namespace std;
 
-// Elevator class handles the elevator's movement and state
+// The Elevator class keeps track of where the elevator is,
+// whether it's idle, where it’s headed, and if it’s waiting for a passenger to choose a destination.
 class Elevator {
 private:
     int currentFloor;
@@ -20,7 +18,7 @@ private:
     bool waitingForDestination;
 
 public:
-    // Initialize elevator at floor 1 and set it to idle
+    // Starts the elevator on floor 1, not moving
     Elevator() {
         currentFloor = 1;
         targetFloor = 1;
@@ -28,24 +26,26 @@ public:
         waitingForDestination = false;
     }
 
-    // Assign a floor for pickup
+    // Called when someone on a floor requests the elevator
     void assignRequest(int floor) {
         targetFloor = floor;
         isIdle = false;
         waitingForDestination = false;
     }
 
-    // Assign a destination floor once someone is inside
+    // Called once someone is inside and selects a destination floor
     void assignDestination(int floor) {
         targetFloor = floor;
         isIdle = false;
         waitingForDestination = false;
     }
 
-    // Move elevator one step closer to the target
+    // Moves the elevator one floor closer to its target
+    // Returns true if movement happened, false otherwise
     bool step() {
         if (isIdle || waitingForDestination) return false;
 
+        // Move toward the target floor
         if (currentFloor < targetFloor) {
             currentFloor++;
             cout << "Elevator moving up to floor " << currentFloor << endl;
@@ -54,24 +54,26 @@ public:
             cout << "Elevator moving down to floor " << currentFloor << endl;
         }
 
+        // Arrived at the requested floor
         if (currentFloor == targetFloor) {
             cout << "Elevator arrived at floor " << currentFloor << endl;
             cout << "Doors opening..." << endl;
             this_thread::sleep_for(chrono::seconds(2));
             cout << "Doors closing..." << endl;
-            waitingForDestination = true;
+            waitingForDestination = true; // Now wait for destination from rider
         }
 
         return true;
     }
 
+    // functions to get status
     int getCurrentFloor() const { return currentFloor; }
     bool idle() const { return isIdle && !waitingForDestination; }
     bool needsDestination() const { return waitingForDestination; }
     void markIdle() { isIdle = true; waitingForDestination = false; }
 };
 
-// Return the closest floor request to the elevator's current location
+// Chooses the closest floor to serve next, based on current position
 int findClosestRequest(int currentFloor, const set<int>& requests) {
     int closest = -1;
     int minDistance = INT_MAX;
@@ -91,8 +93,9 @@ int main() {
     cin >> floors;
 
     Elevator elevator;
-    set<int> requestSet;
+    set<int> requestSet; // Holds floors where people requested the elevator
 
+    // Welcome message + instructions
     cout << "Elevator Simulation Started" << endl;
     cout << "Type a floor number to request the elevator." << endl;
     cout << "Type 0 to skip (no request)." << endl;
@@ -106,7 +109,7 @@ int main() {
         else cout << " (Moving)";
         cout << endl;
 
-        // Ask destination from person inside
+        // If someone is inside and hasn’t chosen a destination yet
         if (elevator.needsDestination()) {
             int dest;
             cout << "You are inside the elevator." << endl;
@@ -114,20 +117,23 @@ int main() {
             cin >> dest;
 
             if (dest == 0) {
+                // Rider exits
                 cout << "You exited the elevator." << endl;
                 elevator.markIdle();
                 this_thread::sleep_for(chrono::seconds(1));
             } else if (dest < 1 || dest > floors) {
+                // Invalid floor selection
                 cout << "Invalid floor. Elevator will go idle." << endl;
                 elevator.markIdle();
                 this_thread::sleep_for(chrono::seconds(1));
             } else {
+                // Valid destination
                 cout << "Elevator going to floor " << dest << endl;
                 elevator.assignDestination(dest);
             }
         }
 
-        // Get new floor request if no one is inside
+        // If no one is inside, allow someone to call the elevator
         if (!elevator.needsDestination()) {
             int input;
             cout << "Enter a floor number to request the elevator (0 to skip, -1 to quit): ";
@@ -141,11 +147,11 @@ int main() {
             } else if (input < 1 || input > floors) {
                 cout << "Invalid floor. Try again." << endl;
             } else {
-                requestSet.insert(input);
+                requestSet.insert(input); // Save the request
             }
         }
 
-        // If elevator is idle and someone requested it
+        // This is If the elevator is free and there’s a request waiting go get it
         if (elevator.idle() && !requestSet.empty()) {
             int nextFloor = findClosestRequest(elevator.getCurrentFloor(), requestSet);
             requestSet.erase(nextFloor);
@@ -153,19 +159,15 @@ int main() {
             elevator.assignRequest(nextFloor);
         }
 
-        // Run elevator for 3 steps to simulate time passing
+        // Simulate time passing  this gives the illusion of motion
         for (int i = 0; i < 3; ++i) {
             if (!elevator.step()) {
+                // If elevator didn’t move, show its current floor
                 cout << "Elevator is currently on floor " << elevator.getCurrentFloor() << endl;
             }
-            this_thread::sleep_for(chrono::milliseconds(500));
+            this_thread::sleep_for(chrono::milliseconds(500)); // Pause for realism
         }
     }
 
     return 0;
 }
-
-
-
-
-
