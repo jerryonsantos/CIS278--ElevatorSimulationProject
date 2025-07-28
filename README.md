@@ -15,8 +15,8 @@ This is a simple C++  program that simulates the operation of a single elevator 
 4. Run Program
    
 # Team Members and Roles
-Jeremiah David: Building and managing Elevator Class
-Jaden Nguyen: Creating user interaction in main()
+## Jeremiah David: Building and managing Elevator Class
+## Jaden Nguyen: Creating user interaction in main()
 
 # Features Implemented
 1. Single Elevator Logic: The simulation models a single elevator operating within a user-defined number of floors.
